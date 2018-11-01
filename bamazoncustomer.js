@@ -14,6 +14,9 @@ var connection = sequel.createConnection({
 
 //Display the store
 connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err, res) {
-    console.log(res);
+    //console.log(res);
+    for(let i = 0; i < res.length; i++) {
+        console.log("Item #" + res[i].item_id + ": " + res[i].product_name + ". Price: $" + res[i].price);
+    }
     connection.end();
 });
