@@ -18,5 +18,21 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
     for(let i = 0; i < res.length; i++) {
         console.log("Item #" + res[i].item_id + ": " + res[i].product_name + ". Price: $" + res[i].price);
     }
-    connection.end();
+    //connection.end();
+    inquire.prompt([
+        {
+            name: "choice",
+            message: "Enter the item number of the product you would like to buy: ",
+            type: "input"
+        },
+        {
+            name: "quantity",
+            message: "How many do you want?: ",
+            type: "input"
+        }
+    ]).then(function(response) {
+        //console.log("You have ordered " + response.quantity + " of " + res[response.choice - 1].product_name + " for $" + res[response.choice - 1].price + " each.");
+        //connection.end();
+        
+    });
 });
