@@ -2,6 +2,7 @@ require("dotenv").config();
 var sequel = require("mysql");
 var inquire = require("inquirer");
 var fs = require("fs");
+const cTable = require("console.table");
 
 //Initiate Connection
 var connection = sequel.createConnection({
@@ -15,9 +16,21 @@ var connection = sequel.createConnection({
 //Display the store
 connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err, res) {
     //console.log(res);
+    // for(let i = 0; i < res.length; i++) {
+    //     console.log("Item #" + res[i].item_id + ": " + res[i].product_name + ". Price: $" + res[i].price);
+    // }
+
+    var store = [];
     for(let i = 0; i < res.length; i++) {
-        console.log("Item #" + res[i].item_id + ": " + res[i].product_name + ". Price: $" + res[i].price);
+        let item = {
+            "Item ID": res[i].item_id,
+            "Product Name": res[i].product_name,
+            "Price": "$" + res[i].price,
+            "In Stock": res[i].stock_quantity
+        }
+        store.push(item);
     }
+    console.table(store);
     //connection.end();
     inquire.prompt([
         {
@@ -33,6 +46,8 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
     ]).then(function(response) {
         //console.log("You have ordered " + response.quantity + " of " + res[response.choice - 1].product_name + " for $" + res[response.choice - 1].price + " each.");
         //connection.end();
-        
+        for(let i = 0; i < res.length; i++) {
+            
+        }
     });
 });
