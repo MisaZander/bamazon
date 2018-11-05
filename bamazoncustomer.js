@@ -48,9 +48,9 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
         //connection.end();
         //Find the item
         for(var i = 0; i < res.length; i++) {
-            console.log("Line " + i + ": Inquire Choice-" + response.choice + " Current Item ID-" + res[i].item_id);
+            //console.log("Line " + i + ": Inquire Choice-" + response.choice + " Current Item ID-" + res[i].item_id);
             if(parseInt(response.choice) === parseInt(res[i].item_id)){
-                console.log("FOUND IT!");
+                //console.log("FOUND IT!");
                 //Found the item but do we have enough?
                 if(parseInt(response.quantity) > res[i].stock_quantity){
                     return console.log("We don't have enough of that in stock. Please try your order again.");
@@ -68,7 +68,15 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
                             console.log("Unable to perform transaction at this time.");
                             return console.log(error);
                         } else {
-                            return console.log("Thank U for your order!");
+                            console.log("Thank U for your order!");
+                            console.log("Order Summary:");
+                            console.table([{
+                                "Item Ordered": res[i].product_name,
+                                "Price Per Item": res[i].price,
+                                "Quantity Ordered": response.quantity,
+                                "Order Subtotal": parseFloat(res[i].price) * parseInt(response.quantity)
+                            }]);
+
                         }
                     });
                     connection.end();
