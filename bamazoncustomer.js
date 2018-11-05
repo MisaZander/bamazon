@@ -46,8 +46,38 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
     ]).then(function(response) {
         //console.log("You have ordered " + response.quantity + " of " + res[response.choice - 1].product_name + " for $" + res[response.choice - 1].price + " each.");
         //connection.end();
-        for(let i = 0; i < res.length; i++) {
-            
+        //Find the item
+        for(var i = 0; i < res.length; i++) {
+            console.log("Line " + i + ": Inquire Choice-" + response.choice + " Current Item ID-" + res[i].item_id);
+            if(parseInt(response.choice) === parseInt(res[i].item_id)){
+                console.log("FOUND IT!");
+                //Found the item but do we have enough?
+                if(parseInt(response.quantity) > res[i].stock_quantity){
+                    return console.log("We don't have enough of that in stock. Please try your order again.");
+                } else {
+                    console.log("Placing order...");
+                    connection.query("UPDATE products SET ? WHERE ?", [
+                    {
+                        stock_quantity: parseInt(res[i].stock_quantity) - parseInt(response.quantity)
+                    },
+                    {
+                        item_id: parseInt(response.choice)
+                    }],
+                    function(error, queryRes) {
+                        if(error) {
+                            console.log("Unable to perform transaction at this time.");
+                            return console.log(error);
+                        } else {
+                            return console.log("Thank U for your order!");
+                        }
+                    });
+                    connection.end();
+                    return;
+                }
+            }
         }
+        //If this point is reached, the item id is invalid
+        connection.end();
+        return console.log("Item does not exist or is out of stock. Please try again later.");
     });
 });
