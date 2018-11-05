@@ -2,6 +2,7 @@ require("dotenv").config();
 var sequel = require("mysql");
 var inquire = require("inquirer");
 var fs = require("fs");
+var moment = require("moment");
 const cTable = require("console.table");
 
 //Initiate Connection
@@ -53,6 +54,7 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
                 //console.log("FOUND IT!");
                 //Found the item but do we have enough?
                 if(parseInt(response.quantity) > res[i].stock_quantity){
+                    connection.end();
                     return console.log("We don't have enough of that in stock. Please try your order again.");
                 } else {
                     console.log("Placing order...");
@@ -76,7 +78,16 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
                                 "Quantity Ordered": response.quantity,
                                 "Order Subtotal": parseFloat(res[i].price) * parseInt(response.quantity)
                             }]);
-
+                            fs.appendFile("log.txt",
+                            "Customer Transaction | " + moment().format("MM/DD/YYYY-HH:mm:ss") + 
+                            " | Ordered: " + res[i].product_name + 
+                            " | Quantity: " + response.quantity +
+                            " | Stock Remaining: " + (res[i].stock_quantity - response.quantity),
+                            function(writeError) {
+                                if(writeError){
+                                    console.log("Could not log transaction to history.");
+                                }
+                            });
                         }
                     });
                     connection.end();
