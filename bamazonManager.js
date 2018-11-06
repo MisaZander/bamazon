@@ -80,3 +80,69 @@ function lowReport() {
         connection.end();
     }); //MySQL query
 } //lowReport()
+
+function receive() {
+    inquire.prompt([
+        {
+            name: "id",
+            type: "input",
+            message: "Enter the item id of the item you would like to receive:"
+        },
+        {
+            name: "quantity",
+            type: "input",
+            message: "How many would you like to receive?:"
+        }
+    ]).then(function(response) {
+        //Validate Input
+        if(isNaN(parseInt(response.id))){
+            connection.end();
+            return console.log("You must enter a valid number in the id field.");
+        }
+        if(isNaN(parseInt(response.quantity))){
+            connection.end();
+            return console.log("You must enter a valid number in the quantity field.");
+        }
+
+        //Obtain current number of that product
+        var currQuantity = 0;
+        var item = "";
+        connection.query("SELECT product_name, stock_quantity FROM products WHERE ? LIMIT 1", [
+            {
+                item_id: parseInt(response.id)
+            }
+        ], function(queryErr, queryRes) {
+            //console.log(queryRes);
+            currQuantity = parseInt(queryRes[0].stock_quantity);
+            item = queryRes[0].product_name;
+        }); //SELECT query callback
+        connection.query("UPDATE products SET ? WHERE ?", [
+            {
+                stock_quantity: currQuantity + parseInt(response.quantity)
+            },
+            {
+                item_id: parseInt(response.id)
+            }
+        ], function(updateErr, updateRes) {
+            if(updateErr) throw updateErr;
+            console.log("Store Updated!");
+            console.log("Receiving Report:");
+            console.table([{
+                "Item Id": response.id,
+                "Item Name": item,
+                "Received Quantity": response.quantity,
+                "New Total": currQuantity + parseInt(response.quantity)
+            }]); //Console.table
+            fs.appendFile("log.txt",
+            "Receiving Report(Restock) | " + moment().format("MM/DD/YYYY-HH:mm:ss") +
+            " | " + item +
+            " | Quantity Added: +" + response.quantity +
+            " | New Total: " + currQuantity + parseInt(response.quantity) + "\n",
+            function(writeErr) {
+                if(writeErr) throw writeErr;
+                console.log("Data logged to transaction history.");
+                connection.end();
+            }); //fs write
+        }); //UPDATE query callback
+    }); //inquire then
+} //receive()

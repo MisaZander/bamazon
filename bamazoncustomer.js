@@ -90,7 +90,7 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
                             "Customer Transaction | " + moment().format("MM/DD/YYYY-HH:mm:ss") + 
                             " | Ordered: " + res[i].product_name + 
                             " | Quantity: " + response.quantity +
-                            " | Stock Remaining: " + (res[i].stock_quantity - response.quantity),
+                            " | Stock Remaining: " + (res[i].stock_quantity - response.quantity) + "\n",
                             function(writeError) {
                                 if(writeError){
                                     console.log("Could not log transaction to history.");
