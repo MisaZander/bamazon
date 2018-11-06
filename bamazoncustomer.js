@@ -45,8 +45,16 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
             type: "input"
         }
     ]).then(function(response) {
-        //console.log("You have ordered " + response.quantity + " of " + res[response.choice - 1].product_name + " for $" + res[response.choice - 1].price + " each.");
-        //connection.end();
+        //Valiate input
+        //console.log("Id parsed: " + parseInt(response.choice) + " | Type: " + typeof parseInt(response.choice));
+        if(isNaN(parseInt(response.choice))){
+            connection.end();
+            return console.log("You must enter a valid number in the id field.");
+        }
+        if(isNaN(parseInt(response.quantity))){
+            connection.end();
+            return console.log("You must enter a valid number in the quantity field.");
+        }
         //Find the item
         for(var i = 0; i < res.length; i++) {
             //console.log("Line " + i + ": Inquire Choice-" + response.choice + " Current Item ID-" + res[i].item_id);
