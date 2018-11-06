@@ -57,3 +57,26 @@ function fullReport(){
         connection.end();
     }); //MySQL query
 } //fullReport()
+
+function lowReport() {
+    console.log("We have 5 or less of the following. Might want to order more.");
+    connection.query("SELECT * FROM products WHERE stock_quantity < 6", function(err, res) {
+        if(res.affectedRows === 0) {
+            console.log("GOOD NEWS EVERYONE! We don't appear to be running low on anything!");
+        } else {
+            var store = [];
+            for(let i = 0; i < res.length; i++) {
+                let item = {
+                    "Item ID": res[i].item_id,
+                    "Product Name": res[i].product_name,
+                    "Price": "$" + res[i].price,
+                    "In Stock": res[i].stock_quantity
+                }
+                store.push(item);
+            }
+            console.table(store);
+            //connection.end();
+        }
+        connection.end();
+    }); //MySQL query
+} //lowReport()
