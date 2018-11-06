@@ -146,3 +146,57 @@ function receive() {
         }); //UPDATE query callback
     }); //inquire then
 } //receive()
+
+function receiveNew() {
+    inquire.prompt([
+        {
+            name: "name",
+            message: "Enter the name of the new product to add to the store:",
+            type: "input"
+        },
+        {
+            name: "department",
+            message: "Enter the department the item belongs in:",
+            type: "input"
+        },
+        {
+            name: "price",
+            message: "Enter price per item: $",
+            type: "input"
+        },
+        {
+            name: "quantity",
+            message: "How many would you like to put into inventory?:",
+            type: "input"
+        }
+    ]).then(function(response) {
+        connection.query("INSERT INTO products SET ?", [
+            {
+                product_name: response.name,
+                department_name: response.department,
+                price: parseFloat(response.price),
+                stock_quantity: parseInt(response.quantity)
+            }
+        ], function(queryErr, queryRes) {
+            if(queryErr) throw queryErr;
+            console.log("New product added!");
+            console.log("Receiving Report:");
+            console.table([{
+                "Product Name": response.name,
+                "Product Department": response.department,
+                "Price": "$" + parseFloat(response.price),
+                "Quantity Added": parseInt(response.quantity)
+            }]); //console.table
+            fs.appendFile("log.txt",
+            "Receiving Report(New Item) | " + moment().format("MM/DD/YYYY-HH:mm:ss") +
+            " | " + response.name +
+            " | Quantity Received: " + parseInt(response.quantity) + 
+            " | Sale Price: $" + parseFloat(response.price) + "\n",
+            function(writeErr) {
+                if(writeErr) throw writeErr;
+                console.log("Report logged to file.");
+            });//appendFile callback
+        });//query callback
+        connection.end();
+    });//inquire callback
+}//receiveNew()
