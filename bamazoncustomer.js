@@ -68,7 +68,8 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
                     console.log("Placing order...");
                     connection.query("UPDATE products SET ? WHERE ?", [
                     {
-                        stock_quantity: parseInt(res[i].stock_quantity) - parseInt(response.quantity)
+                        stock_quantity: parseInt(res[i].stock_quantity) - parseInt(response.quantity),
+                        product_sales: res[i].product_sales + (parseInt(response.quantity) * parseFloat(res[i].price))
                     },
                     {
                         item_id: parseInt(response.choice)
