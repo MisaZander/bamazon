@@ -71,3 +71,37 @@ function viewSales() {
         connection.end();
     });//Mega select query
 }//viewSales()
+
+function newDepartment() {
+    inquire.prompt([
+        {
+            name: "name",
+            type: "input",
+            message: "Enter the name of the new department:"
+        },
+        {
+            name: "osales",
+            type: "input",
+            message: "What are the overhead costs of this new department?:"
+        }
+    ]).then(function(response) {
+        //Input validation
+        if(isNaN(parseFloat(response.osales))){
+            connection.end();
+            return console.log("You must enter a number in the overhead sales field");
+        }
+
+        connection.query("INSERT INTO departments SET ?", [
+            {
+                department_name: response.name,
+                over_head_costs: parseFloat(response.osales)
+            }
+        ], function(queryErr, queryRes) {
+            if(queryErr) {
+                return console.log("Could not insert new department: " + queryErr);
+            }
+            console.log("Department added!");
+        })//INSERT query
+        connection.end();
+    }); //Inquire then
+}//newDepartment()
