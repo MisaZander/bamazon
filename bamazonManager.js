@@ -115,35 +115,36 @@ function receive() {
             //console.log(queryRes);
             currQuantity = parseInt(queryRes[0].stock_quantity);
             item = queryRes[0].product_name;
+
+            connection.query("UPDATE products SET ? WHERE ?", [
+                {
+                    stock_quantity: currQuantity + parseInt(response.quantity)
+                },
+                {
+                    item_id: parseInt(response.id)
+                }
+            ], function(updateErr, updateRes) {
+                if(updateErr) throw updateErr;
+                console.log("Store Updated!");
+                console.log("Receiving Report:");
+                console.table([{
+                    "Item Id": response.id,
+                    "Item Name": item,
+                    "Received Quantity": response.quantity,
+                    "New Total": currQuantity + parseInt(response.quantity)
+                }]); //Console.table
+                fs.appendFile("log.txt",
+                "Receiving Report(Restock) | " + moment().format("MM/DD/YYYY-HH:mm:ss") +
+                " | " + item +
+                " | Quantity Added: +" + response.quantity +
+                " | New Total: " + (currQuantity + parseInt(response.quantity)) + "\n",
+                function(writeErr) {
+                    if(writeErr) throw writeErr;
+                    console.log("Data logged to transaction history.");
+                    connection.end();
+                }); //fs write
+            }); //UPDATE query callback
         }); //SELECT query callback
-        connection.query("UPDATE products SET ? WHERE ?", [
-            {
-                stock_quantity: currQuantity + parseInt(response.quantity)
-            },
-            {
-                item_id: parseInt(response.id)
-            }
-        ], function(updateErr, updateRes) {
-            if(updateErr) throw updateErr;
-            console.log("Store Updated!");
-            console.log("Receiving Report:");
-            console.table([{
-                "Item Id": response.id,
-                "Item Name": item,
-                "Received Quantity": response.quantity,
-                "New Total": currQuantity + parseInt(response.quantity)
-            }]); //Console.table
-            fs.appendFile("log.txt",
-            "Receiving Report(Restock) | " + moment().format("MM/DD/YYYY-HH:mm:ss") +
-            " | " + item +
-            " | Quantity Added: +" + response.quantity +
-            " | New Total: " + currQuantity + parseInt(response.quantity) + "\n",
-            function(writeErr) {
-                if(writeErr) throw writeErr;
-                console.log("Data logged to transaction history.");
-                connection.end();
-            }); //fs write
-        }); //UPDATE query callback
     }); //inquire then
 } //receive()
 

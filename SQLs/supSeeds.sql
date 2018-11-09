@@ -49,7 +49,3 @@ WHERE item_id=9;
 UPDATE products
 SET product_sales=159.92
 WHERE item_id=10;
-
-UPDATE products
-SET product_sales=7.18
-WHERE item_id=11;

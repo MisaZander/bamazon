@@ -16,10 +16,10 @@ var connection = sequel.createConnection({
 
 //Display the store
 connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err, res) {
-    //console.log(res);
-    // for(let i = 0; i < res.length; i++) {
-    //     console.log("Item #" + res[i].item_id + ": " + res[i].product_name + ". Price: $" + res[i].price);
-    // }
+    if(err) {
+        connection.end();
+        return console.log(err);
+    }
 
     var store = [];
     for(let i = 0; i < res.length; i++) {
@@ -87,9 +87,9 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
                             console.log("Order Summary:");
                             console.table([{
                                 "Item Ordered": res[i].product_name,
-                                "Price Per Item": res[i].price,
+                                "Price Per Item": "$" + res[i].price,
                                 "Quantity Ordered": response.quantity,
-                                "Order Subtotal": parseFloat(res[i].price) * parseInt(response.quantity)
+                                "Order Subtotal": "$" + (parseFloat(res[i].price) * parseInt(response.quantity))
                             }]);
                             fs.appendFile("log.txt",
                             "Customer Transaction | " + moment().format("MM/DD/YYYY-HH:mm:ss") + 
