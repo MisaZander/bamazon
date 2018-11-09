@@ -40,7 +40,7 @@ function viewSales() {
                                 "d.department_id, " +
                                 "d.department_name, " +
                                 "d.over_head_costs, " + 
-                                "SUM(p.product_sales) " +
+                                "SUM(p.product_sales) AS 'total_sales' " +
                             "FROM " +
                                 "departments AS d " +
                             "LEFT JOIN " +
@@ -50,8 +50,24 @@ function viewSales() {
                             "GROUP BY " +
                                 "d.department_id";
     connection.query(theUltimateQuery, function(queryErr, queryRes) {
-        if(queryErr) throw queryErr;
-        console.log(queryRes);
+        if(queryErr) {
+            connection.end();
+            return console.log(queryErr);
+        }
+        //console.log(queryRes);
+        var table = [];
+        for(let i = 0; i < queryRes.length; i++) {
+            let row = {
+                "Department ID": queryRes[i].department_id,
+                "Department Name": queryRes[i].department_name,
+                "Total Sales": "$" + queryRes[i].total_sales,
+                "Overhead Costs": "$" + queryRes[i].over_head_costs,
+                "Total Profit": "$" + (parseFloat(queryRes[i].total_sales) - parseFloat(queryRes[i].over_head_costs))
+            }; 
+            table.push(row);
+        }
+        console.log("Here be your sales report:");
+        console.table(table);
         connection.end();
     });//Mega select query
 }//viewSales()
