@@ -60,9 +60,9 @@ function viewSales() {
             let row = {
                 "Department ID": queryRes[i].department_id,
                 "Department Name": queryRes[i].department_name,
-                "Total Sales": "$" + queryRes[i].total_sales,
+                "Total Sales": "$" + (queryRes[i].total_sales === null ? 0.00 : queryRes[i].total_sales),
                 "Overhead Costs": "$" + queryRes[i].over_head_costs,
-                "Total Profit": "$" + (parseFloat(queryRes[i].total_sales) - parseFloat(queryRes[i].over_head_costs))
+                "Total Profit": "$" + ((queryRes[i].total_sales === null ? 0.00 : (parseFloat(queryRes[i].total_sales))) - parseFloat(queryRes[i].over_head_costs))
             }; 
             table.push(row);
         }
