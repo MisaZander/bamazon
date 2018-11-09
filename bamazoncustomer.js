@@ -55,6 +55,10 @@ connection.query("SELECT * FROM products WHERE stock_quantity > 0", function(err
             connection.end();
             return console.log("You must enter a valid number in the quantity field.");
         }
+        if(parseInt(response.quantity) < 0) {
+            connection.end();
+            return console.log("You must enter a positive quantity.");
+        }
         //Find the item
         for(var i = 0; i < res.length; i++) {
             //console.log("Line " + i + ": Inquire Choice-" + response.choice + " Current Item ID-" + res[i].item_id);

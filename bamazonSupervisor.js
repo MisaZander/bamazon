@@ -37,10 +37,10 @@ inquire.prompt([
 
 function viewSales() {
     var theUltimateQuery = "SELECT " + 
-                                "d.department_id AS 'Department ID', " +
-                                "d.department_name AS 'Department Name', " +
-                                "d.over_head_costs AS 'Overhead Costs', " + 
-                                "SUM(p.product_sales) AS 'Total Sales' " +
+                                "d.department_id, " +
+                                "d.department_name, " +
+                                "d.over_head_costs, " + 
+                                "SUM(p.product_sales) " +
                             "FROM " +
                                 "departments AS d " +
                             "LEFT JOIN " +
