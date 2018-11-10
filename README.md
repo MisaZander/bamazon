@@ -36,3 +36,12 @@ Use the provided init files to create the necessary tables and columns to run th
 1. This level requires the products table to exist so it can tack on a "product_sales" column. Copy the contents of the "supervise.sql" file and place it into a MySQL editor of your choice and execute the commands to add the necessary column and create a departments table.
 2. Optionally, use the contents of the "supSeeds.sql" file to populate the departments table and change the sales to some positive values.
 3. You may now run "node bamazonSupervisor.js" to view total sales by department.
+
+## Syntax
+Use node in conjunction with one of the script files to run the program. No additional arguments or options are required on the command line; the program will prompt you for any additional info it needs. Use any of the three commands:
+```
+$ node bamazoncustomer.js
+$ node bamazonManager.js
+$ node bamazonSupervisor.js
+```
+Full program demo: https://youtu.be/6zhKtiLMpHU
